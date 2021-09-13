@@ -23,6 +23,7 @@ namespace Labb_2
         {
             NameOfProduct = name;
             PriceOfProduct = price;
+            _assortment.Add(this);
         }
 
     }
