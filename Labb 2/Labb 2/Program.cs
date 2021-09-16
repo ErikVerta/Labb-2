@@ -1,10 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Labb_2
 {   
     class Program
     {
         public static string Username { get; set; }
+        public static int currentChoise { get; set; }
+
+
+        private static List<string> _startMenuList = new List<string>() {"Login", "Create new account" };
+
+        public static List<string> StartMenuList
+        {
+            get { return _startMenuList; }
+            set { _startMenuList = value; }
+        }
+
+
         static void Main(string[] args)
         {
             Customer customer1 = new Customer("Knatte", "123");         
@@ -12,25 +26,53 @@ namespace Labb_2
             Customer customer3 = new Customer("Tjatte", "213");
             Products product1 = new Products("Korv", 5.5F);
             Products product2 = new Products("Dricka", 10F);     
-            Products product3 = new Products("Äpple", 3.5F);           
+            Products product3 = new Products("Äpple", 3.5F);
+            currentChoise = 0;
             StartMenu();
         }
         
         //Första skärmen där användaren får välja att logga in eller registera ett nytt kundkonto.
         public static void StartMenu()
         {           
-            Console.WriteLine("1: Login");
-            Console.WriteLine("2: Register new account");
-            char Input = Console.ReadKey().KeyChar;
-            switch (Input)
+            var temp = 0;
+            foreach (var item in StartMenuList)
             {
-                case '1':
+                Console.SetCursorPosition(10, temp);                            
+                Console.WriteLine(item);
+                temp++;
+            }          
+            Console.SetCursorPosition(9, currentChoise);
+            Console.Write(">");
+            Console.SetCursorPosition(8, currentChoise);
+            switch (Console.ReadKey().Key)
+            {              
+                case ConsoleKey.UpArrow:
+                    if (currentChoise > 0)
+                    {
+                        currentChoise--;
+                    }                
                     Console.Clear();
-                    Customer.Login();
+                    StartMenu();
                     break;
-                case '2':
+                case ConsoleKey.DownArrow:
+                    if (currentChoise + 1 < StartMenuList.Count())
+                    {
+                        currentChoise++;
+                    }
                     Console.Clear();
-                    CreateAccount();
+                    StartMenu();
+                    break;
+                case ConsoleKey.Enter:
+                    if (currentChoise == 0)
+                    {
+                        Console.Clear();
+                        Customer.Login();
+                    }
+                    else if (currentChoise == 1)
+                    {
+                        Console.Clear();
+                        CreateAccount();
+                    }
                     break;
                 default:
                     Console.Clear();

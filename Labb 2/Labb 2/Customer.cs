@@ -88,11 +88,11 @@ namespace Labb_2
                 }
                 if (count != 0)
                 {
-                    Console.WriteLine($"{product.NameOfProduct} Price for 1: {product.PriceOfProduct}SEK Price for {count}: {product.PriceOfProduct * count}");
+                    Console.WriteLine($"{product.NameOfProduct} Price: {product.PriceOfProduct} SEK Price for {count}: {product.PriceOfProduct * count} SEK");
                     count = 0;
                 }
             }
-            Console.WriteLine($"Total price: {username.CalculateTotalPrice(username)}");
+            Console.WriteLine($"Total price: {username.CalculateTotalPrice(username)} SEK");
             
             Console.WriteLine("1: Shop");
             Console.WriteLine("2: Checkout");
@@ -123,7 +123,7 @@ namespace Labb_2
         public void Checkout(Customer username)
         {          
             Console.WriteLine("Thank you for your purchase!");
-            Console.WriteLine($"Your total: {CalculateTotalPrice(username)}SEK");
+            Console.WriteLine($"Your total: {CalculateTotalPrice(username)} SEK");
             username.Cart.Clear();
             Program.MainMenu(username);
         }
@@ -134,7 +134,7 @@ namespace Labb_2
             Console.Clear();
             foreach (var item in Products.Assortment)
             {
-                Console.WriteLine($"{item.NameOfProduct} Price: {item.PriceOfProduct}SEK");
+                Console.WriteLine($"{item.NameOfProduct} Price: {item.PriceOfProduct} SEK");
             }
             Console.WriteLine("Write the name of the Item you would like to buy. If you want to go to the main meny press ENTER.");
             string inputItem = Console.ReadLine().ToLower();
