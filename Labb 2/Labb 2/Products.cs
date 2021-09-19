@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Labb_2
 {
-    class Products
+    public class Products
     {
         private static List<Products> _assortment = new List<Products>();
 
@@ -23,7 +23,7 @@ namespace Labb_2
         {
             NameOfProduct = name;
             PriceOfProduct = price;
-            _assortment.Add(this);
+            Assortment.Add(this);
         }
 
     }

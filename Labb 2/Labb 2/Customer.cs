@@ -6,24 +6,34 @@ using System.Threading.Tasks;
 
 namespace Labb_2
 {
-    class Customer
+    public class Customer
     {
-        public string Name { get; set; }
-        private string Password { get; set; }
-        private static int _selectorPosition = 2;
+        public string Name { get;}
+        public string Password { get; set; }
 
-        private static int SelectorPosition
+        private string _currencySign = "SEK";
+
+        private string CurrencySign
         {
-            get { return _selectorPosition; }
-            set { _selectorPosition = value; }
+            get { return _currencySign; }
+            set { _currencySign = value; }
         }
 
-        private List<Products> _cart;
+        private float _CurrencyRate = 1;
+
+        public float CurrencyRate
+        {
+            get { return _CurrencyRate; }
+            set { _CurrencyRate = value; }
+        }
+
+
+        public List<Products> _cart;
 
         public List<Products> Cart
         {
             get { return _cart; }
-            private set { _cart = value; }
+            set { _cart = value; }
         }
         private static List<Customer> _customerList = new List<Customer>();
 
@@ -109,26 +119,19 @@ namespace Labb_2
         //Skriver ut användarnamn, lösenord samt kundvagnen.
         public override string ToString()
         {
-            Console.WriteLine(Name);
-            Console.WriteLine(Password);
+            Console.Clear();
+            Console.WriteLine($"Username: {Name}");
+            Console.WriteLine($"Password: {Password}");
+            PrintCart();
             return "";
         }
         
         //Skriver ut Innehållet i kundvagnen samt priser.
-        public void PrintCart()
+        private void PrintCart()
         {
-            Console.Clear();
             var count = 0;
-            var tempRowCounter = 2;
             Console.WriteLine("CART");
-            Console.SetCursorPosition(0, 1);
-            Console.Write("Product:");
-            Console.SetCursorPosition(10, 1);
-            Console.Write("Price:");
-            Console.SetCursorPosition(20, 1);
-            Console.Write("Amount:");
-            Console.SetCursorPosition(30, 1);
-            Console.WriteLine("Total:");
+            Console.WriteLine("Product:            Price:              Amount:             Total:");
 
             foreach (var product in Products.Assortment)
             {
@@ -141,33 +144,33 @@ namespace Labb_2
                 }
                 if (count != 0)
                 {
-                    Console.SetCursorPosition(0, tempRowCounter);
                     Console.Write(product.NameOfProduct);
-                    Console.SetCursorPosition(10, tempRowCounter);
-                    Console.Write($"{product.PriceOfProduct} SEK");
-                    Console.SetCursorPosition(20, tempRowCounter);
+                    Console.CursorLeft = 20;
+                    Console.Write($"{product.PriceOfProduct * CurrencyRate}{CurrencySign}");
+                    Console.CursorLeft = 40;
                     Console.Write(count);
-                    Console.SetCursorPosition(30, tempRowCounter);
-                    Console.WriteLine($"{product.PriceOfProduct * count} SEK");
-                    tempRowCounter++;
+                    Console.CursorLeft = 60;
+                    Console.WriteLine($"{(product.PriceOfProduct * CurrencyRate) * count}{CurrencySign}");
                     count = 0;
                 }
             }
-            Console.WriteLine($"Total price for all products: {CalculateTotalPrice()} SEK");
-
+            
+            Console.WriteLine($"Total price for all products: {this.CalculateTotalPrice()}{CurrencySign}");
+            
             Console.WriteLine("If you want to proceed to checkout press <enter>, otherwise press <backspace> to go back to Main Menu.");
-            switch (Console.ReadKey().Key)
+            ConsoleKeyInfo keyInfo;
+            do
             {
-                case ConsoleKey.Backspace:
-                    Program.MainMenu(this);
-                    break;               
-                case ConsoleKey.Enter:
+                keyInfo = Console.ReadKey();
+                if (keyInfo.Key == ConsoleKey.Enter)
+                {
                     Checkout();
-                    break;                       
-                default:
+                }
+                if (keyInfo.Key == ConsoleKey.Backspace)
+                {
                     Program.MainMenu(this);
-                    break;
-            }
+                }
+            } while (true);
         }
        
         //Används för att betala. rensar också kundvagnen.
@@ -176,7 +179,7 @@ namespace Labb_2
             Console.Clear();
             Console.WriteLine("CHECKOUT");
             Console.WriteLine("Thank you for your purchase!");
-            Console.WriteLine($"Your total: {CalculateTotalPrice()} SEK");
+            Console.WriteLine($"Your total: {this.CalculateTotalPrice()}{CurrencySign}");
             Cart.Clear();
             Console.WriteLine("Press any key to go back to Main Menu.");
             Console.ReadKey(true);
@@ -186,73 +189,120 @@ namespace Labb_2
         //Kunden får upp alla produkter samt priser och kan då välja att lägga till varor i sin kundvagn.
         public void Shop()
         {
-            var tempRowCounter = 2;
+            int selectorPosition = 0;
+
+            PrintShop(Products.Assortment, Products.Assortment[selectorPosition]);
+
+            ConsoleKeyInfo keyInfo;
+            do
+            {
+                keyInfo = Console.ReadKey();
+                if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (selectorPosition + 1 < Products.Assortment.Count)
+                    {
+                        selectorPosition++;
+                        PrintShop(Products.Assortment, Products.Assortment[selectorPosition]);
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (selectorPosition - 1 >= 0)
+                    {
+                        selectorPosition--;
+                        PrintShop(Products.Assortment, Products.Assortment[selectorPosition]);
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.Enter)
+                {                   
+                    do
+                    {
+                        Console.Write("How many: ");
+                        var input = Console.ReadLine();
+                        if (int.TryParse(input, out int amount))
+                        {
+                            for (int i = 0; i < amount; i++)
+                            {
+                                Cart.Add(Products.Assortment[selectorPosition]);
+                            }
+                            Console.WriteLine($"{amount} added to your cart.");
+                            System.Threading.Thread.Sleep(1000);
+                            Shop();
+                        }
+                        else
+                        {
+                            Console.WriteLine("You didn't input a number silly, try again.");
+                        }
+                    } while (true);                   
+                }
+                if (keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    Program.MainMenu(this);
+                }
+
+            } while (true);
+        }
+        private void PrintShop(List<Products> products, Products selectedProduct) 
+        {
             Console.Clear();
             Console.WriteLine("SHOP");
-            Console.SetCursorPosition(0, 1);
-            Console.Write("Product:");
-            Console.SetCursorPosition(10, 1);
-            Console.WriteLine("Price:");
-            foreach (var product in Products.Assortment)
+            Console.WriteLine("Product:            Price:");
+            foreach (var product in products)
             {
-                Console.SetCursorPosition(1, tempRowCounter);
-                Console.Write(product.NameOfProduct);
-                Console.SetCursorPosition(10, tempRowCounter);
-                Console.WriteLine($"{product.PriceOfProduct} SEK");
-                tempRowCounter++;
+                if (product == selectedProduct)
+                {
+                    Console.Write("> ");
+                }
+                else
+                {
+                    Console.Write(" ");
+                }               
+                Console.Write($"{product.NameOfProduct}");
+                Console.CursorLeft = 20;
+                Console.WriteLine($"{product.PriceOfProduct * CurrencyRate}{CurrencySign}");
             }
-            Console.WriteLine("Navigate to your product of choise and press <enter>, if you want to go back to the Main Menu press <backspace>");
-            Console.SetCursorPosition(0, SelectorPosition);
-            Console.Write(">");
-            Console.SetCursorPosition(0, SelectorPosition);
-            switch (Console.ReadKey().Key)
-            {
-                case ConsoleKey.UpArrow:
-                    if (SelectorPosition > 2)
-                    {
-                        SelectorPosition--;
-                    }
-                    Shop();
-                    break;
-                case ConsoleKey.DownArrow:
-                    if (SelectorPosition - 1 < Products.Assortment.Count())
-                    {
-                        SelectorPosition++;
-                    }
-                    Shop();
-                    break;
-                case ConsoleKey.Enter:
-                    Console.SetCursorPosition(20, SelectorPosition);
-                    Console.Write("Amount: ");
-                    var amountOfProduct = int.Parse(Console.ReadLine());
-                    for (int i = 0; i < amountOfProduct; i++)
-                    {
-                        Cart.Add(Products.Assortment.ElementAt(SelectorPosition - 2));
-                    }
-                    Console.SetCursorPosition(30 + amountOfProduct.ToString().Length, SelectorPosition);
-                    Console.Write("added to your cart.");
-                    System.Threading.Thread.Sleep(1000);
-                    Shop();
-                    break;
-                case ConsoleKey.Backspace:
-                    Program.MainMenu(this);
-                    break;
-                default:
-                    Shop();
-                    break;
-            }
+            Console.WriteLine("Press <UpArrow> or <DownArrow> to navigate. Press <Enter> to select or press <Backspace> to go to Main Menu.");
+
         }
-        
+
         //Räknar ut totala priset av kundvagnen.
-        private float CalculateTotalPrice()
+        public virtual float CalculateTotalPrice()
         {
+                     
             var total = 0F;
             foreach (var item in Cart)
             {
-                total += item.PriceOfProduct;
+                total += item.PriceOfProduct * CurrencyRate;
             }
             return total;
+                     
+        }       
+        public void CurrencyConvertToSEK()
+        {
+            CurrencySign = "SEK";
+            CurrencyRate = 1F;
+            Console.Clear();
+            Console.WriteLine("Currency converted to SEK.");
+            System.Threading.Thread.Sleep(1000);
+            Program.MainMenu(this);
         }
-
+        public void CurrencyConvertToDollar()
+        {
+            CurrencySign = "$";
+            CurrencyRate = 0.2F;
+            Console.Clear();
+            Console.WriteLine("Currency converted to Dollar.");
+            System.Threading.Thread.Sleep(1000);
+            Program.MainMenu(this);
+        }
+        public void CurrencyConvertToPounds()
+        {
+            CurrencySign = "£";
+            CurrencyRate = 0.1F;
+            Console.Clear();
+            Console.WriteLine("Currency converted to Pounds.");
+            System.Threading.Thread.Sleep(1000);
+            Program.MainMenu(this);
+        }
     }
 }
