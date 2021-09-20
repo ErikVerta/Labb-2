@@ -14,7 +14,7 @@ namespace Labb_2
 
         private static List<CurrencyOptions> CurrencyOptions { get; set; }
 
-        //Instansiera alla nödvändiga objekt.
+        //Instansierar alla nödvändiga objekt.
         static void Main(string[] args)
         {
             ReadTextfile();
@@ -312,7 +312,7 @@ namespace Labb_2
             }           
         }
         
-        //Kontrollerar om .txt filen finns på datorn, om den inte finns så skapar den .txt filen med standard kontorna.
+        //Kontrollerar om .txt filen finns på datorn, om den inte finns så skapar den .txt filen med standard konton.
         private static void CheckForTextFile(string path)
         {
             if (!File.Exists(path))
