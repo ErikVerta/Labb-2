@@ -8,22 +8,22 @@ namespace Labb_2
 {
     public class Products
     {
-        private static List<Products> _assortment = new List<Products>();
+        private static List<Products> _listOfProducts = new List<Products>();
 
-        public static List<Products> Assortment
+        public static List<Products> ListofProducts
         {
-            get { return _assortment; }
-            set { _assortment = value; }
+            get { return _listOfProducts; }
+            private set { _listOfProducts = value; }
         }
-        public string NameOfProduct { get; set; }
-        public float PriceOfProduct { get; private set; }
+        public string Name { get; private set; }
+        public float Price { get; private set; }
 
         //Konstruktor för att skapa nya produkter.
         public Products(string name, float price)
         {
-            NameOfProduct = name;
-            PriceOfProduct = price;
-            Assortment.Add(this);
+            Name = name;
+            Price = price;
+            ListofProducts.Add(this);
         }
 
     }

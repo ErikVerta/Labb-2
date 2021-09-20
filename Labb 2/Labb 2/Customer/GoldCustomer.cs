@@ -16,15 +16,18 @@ namespace Labb_2
         }
 
 
+        //Konstruktorn för att skapa ett nytt guld konto.
         public GoldCustomer(string name, string password) : base(name, password) 
         {
         }
+        
+        //Räknat ut totala priset för en guld kund.
         public override float CalculateTotalPrice()
         {
             var total = 0F;
-            foreach (var item in Cart)
+            foreach (var product in Cart)
             {
-                total += item.PriceOfProduct * CurrencyRate;
+                total += product.Price * CurrencyRate;
             }
             return total * Discount;
         }
