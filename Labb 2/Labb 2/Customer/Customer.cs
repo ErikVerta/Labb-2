@@ -11,6 +11,8 @@ namespace Labb_2
         public string Name { get;}
         public string Password { get; private set; }
 
+        public string CustomerType { get;}
+
         private string _currencyCode = "SEK";
 
         private string CurrencyCode
@@ -44,10 +46,11 @@ namespace Labb_2
         }
 
         //Konstruktorn för att skapa ett nytt konto.
-        public Customer(string name, string password)
+        public Customer(string name, string password, string type)
         {
             Name = name;
             Password = password;
+            CustomerType = type;
             Cart = new List<Products>();
             _customerList.Add(this);
         }
@@ -117,18 +120,37 @@ namespace Labb_2
         }
 
         //Skriver ut användarnamn, lösenord samt kundvagnen.
-        public new void ToString()
-        {
-            Console.Clear();
-            Console.WriteLine($"Username: {Name}");
-            Console.WriteLine($"Password: {Password}");
+        public override string ToString()
+        {                
             PrintCart();
+            return $"Username: {Name}\r\nPassword: {Password}";
         }
         
+        //Metod för att visa kundvagnen.
+        public void ShowCart()
+        {
+            PrintCart();
+            Console.WriteLine("If you want to proceed to checkout press <enter>, otherwise press <backspace> to go back to Main Menu.");
+            ConsoleKeyInfo keyInfo;
+            do
+            {
+                keyInfo = Console.ReadKey();
+                if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    Checkout();
+                }
+                if (keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    Program.MainMenu(this);
+                }
+            } while (true);
+        }
+
         //Skriver ut Innehållet i kundvagnen samt namn och priser.
         private void PrintCart()
         {
             var productCount = 0;
+            Console.Clear();
             Console.WriteLine("CART");
             Console.WriteLine("Product:            Price:              Amount:             Total:");
 
@@ -149,24 +171,8 @@ namespace Labb_2
                     Console.WriteLine($"{(product.Price * CurrencyRate) * productCount} {CurrencyCode}");
                     productCount = 0;
                 }
-            }
-            
-            Console.WriteLine($"Total price for all products: {this.CalculateTotalPrice()} {CurrencyCode}");
-            
-            Console.WriteLine("If you want to proceed to checkout press <enter>, otherwise press <backspace> to go back to Main Menu.");
-            ConsoleKeyInfo keyInfo;
-            do
-            {
-                keyInfo = Console.ReadKey();
-                if (keyInfo.Key == ConsoleKey.Enter)
-                {
-                    Checkout();
-                }
-                if (keyInfo.Key == ConsoleKey.Backspace)
-                {
-                    Program.MainMenu(this);
-                }
-            } while (true);
+            }          
+            Console.WriteLine($"Total price for all products: {this.CalculateTotalPrice()} {CurrencyCode}");                     
         }
        
         //Metod för att betala, skriver ut lite info samt rensar kundvagnen.

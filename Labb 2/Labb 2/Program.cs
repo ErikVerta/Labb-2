@@ -7,12 +7,15 @@ namespace Labb_2
 {   
     class Program
     {
-                   
+
+        private static int PointerPosition { get; set; }
         private static List<StartMenuOption> StartMenuOptions { get; set; }
 
         private static List<MainMenuOption> MainMenuOptions { get; set; }
 
         private static List<CurrencyOptions> CurrencyOptions { get; set; }
+
+        private static List<string> CustomerTypes { get; set; }
 
         //Instansierar alla nödvändiga objekt.
         static void Main(string[] args)
@@ -23,16 +26,18 @@ namespace Labb_2
             new Products("Hotdog", 5F);
             new Products("Soda", 10);
 
+            CustomerTypes = new List<string> {"Gold", "Silver","Bronze","Basic" };
+
             StartMenuOptions = new List<StartMenuOption>
             {
                 new StartMenuOption("Login", () => Customer.Login()),
                 new StartMenuOption("Create new account", () => CreateAccount()),
             };
 
-            MainMenuOptions = new List<MainMenuOption> 
+            MainMenuOptions = new List<MainMenuOption>
             {
                 new MainMenuOption("Shop", (customer) => customer.Shop()),
-                new MainMenuOption("Go to Cart", (customer) => customer.ToString()),
+                new MainMenuOption("Go to Cart", (customer) => customer.ShowCart()),
                 new MainMenuOption("Go to Checkout", (customer) => customer.Checkout()),
                 new MainMenuOption("Change currency", (customer) => CurrencyMenu(customer)),
                 new MainMenuOption("Logout", (customer) => StartMenu()),                 
@@ -51,9 +56,9 @@ namespace Labb_2
         //Startmenyn med alternativ för att logga in eller registrera nytt konto.
         public static void StartMenu()
         {
-            int pointerPosition = 0;
+            PointerPosition = 0;
 
-            PrintStartMenu(StartMenuOptions, StartMenuOptions[pointerPosition]);
+            PrintStartMenu(StartMenuOptions, StartMenuOptions[PointerPosition]);
      
             ConsoleKeyInfo keyInfo;
             do
@@ -61,23 +66,23 @@ namespace Labb_2
                 keyInfo = Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
-                    if (pointerPosition + 1 < StartMenuOptions.Count)
+                    if (PointerPosition + 1 < StartMenuOptions.Count)
                     {
-                        pointerPosition++;
-                        PrintStartMenu(StartMenuOptions, StartMenuOptions[pointerPosition]);
+                        PointerPosition++;
+                        PrintStartMenu(StartMenuOptions, StartMenuOptions[PointerPosition]);
                     }
                 }
                 if (keyInfo.Key == ConsoleKey.UpArrow)
                 {
-                    if (pointerPosition - 1 >= 0)
+                    if (PointerPosition - 1 >= 0)
                     {
-                        pointerPosition--;
-                        PrintStartMenu(StartMenuOptions, StartMenuOptions[pointerPosition]);
+                        PointerPosition--;
+                        PrintStartMenu(StartMenuOptions, StartMenuOptions[PointerPosition]);
                     }
                 }
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    StartMenuOptions[pointerPosition].Selected.Invoke();
+                    StartMenuOptions[PointerPosition].Selected.Invoke();
                 }               
             } while (true);
         }
@@ -103,9 +108,9 @@ namespace Labb_2
         //Mainmenyn med alternativ för att shoppa, gå till kundvagn, gå till kassa, ändra valuta eller logga ut.
         public static void MainMenu(Customer customer)
         {
-            int pointerPosition = 0;
+            PointerPosition = 0;
 
-            PrintMainMenu(MainMenuOptions, MainMenuOptions[pointerPosition]);
+            PrintMainMenu(MainMenuOptions, MainMenuOptions[PointerPosition]);
          
             ConsoleKeyInfo keyInfo;
             do
@@ -113,23 +118,23 @@ namespace Labb_2
                 keyInfo = Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
-                    if (pointerPosition + 1 < MainMenuOptions.Count)
+                    if (PointerPosition + 1 < MainMenuOptions.Count)
                     {
-                        pointerPosition++;
-                        PrintMainMenu(MainMenuOptions, MainMenuOptions[pointerPosition]);
+                        PointerPosition++;
+                        PrintMainMenu(MainMenuOptions, MainMenuOptions[PointerPosition]);
                     }
                 }
                 if (keyInfo.Key == ConsoleKey.UpArrow)
                 {
-                    if (pointerPosition - 1 >= 0)
+                    if (PointerPosition - 1 >= 0)
                     {
-                        pointerPosition--;
-                        PrintMainMenu(MainMenuOptions, MainMenuOptions[pointerPosition]);
+                        PointerPosition--;
+                        PrintMainMenu(MainMenuOptions, MainMenuOptions[PointerPosition]);
                     }
                 }
                 if (keyInfo.Key == ConsoleKey.Enter)
-                {
-                    MainMenuOptions[pointerPosition].Selected.Invoke(customer);
+                {                   
+                    MainMenuOptions[PointerPosition].Selected.Invoke(customer);
                 }
 
             } while (true);
@@ -159,9 +164,9 @@ namespace Labb_2
         //Valutamenyn med alternativ för att byta till Euro, Dollar eller SEK.
         private static void CurrencyMenu(Customer customer)
         {
-            int pointerPosition = 0;
+            PointerPosition = 0;
 
-            PrintCurrencyMenu(CurrencyOptions, CurrencyOptions[pointerPosition]);
+            PrintCurrencyMenu(CurrencyOptions, CurrencyOptions[PointerPosition]);
 
             ConsoleKeyInfo keyInfo;
             do
@@ -169,23 +174,23 @@ namespace Labb_2
                 keyInfo = Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
-                    if (pointerPosition + 1 < CurrencyOptions.Count)
+                    if (PointerPosition + 1 < CurrencyOptions.Count)
                     {
-                        pointerPosition++;
-                        PrintCurrencyMenu(CurrencyOptions, CurrencyOptions[pointerPosition]);
+                        PointerPosition++;
+                        PrintCurrencyMenu(CurrencyOptions, CurrencyOptions[PointerPosition]);
                     }
                 }
                 if (keyInfo.Key == ConsoleKey.UpArrow)
                 {
-                    if (pointerPosition - 1 >= 0)
+                    if (PointerPosition - 1 >= 0)
                     {
-                        pointerPosition--;
-                        PrintCurrencyMenu(CurrencyOptions, CurrencyOptions[pointerPosition]);
+                        PointerPosition--;
+                        PrintCurrencyMenu(CurrencyOptions, CurrencyOptions[PointerPosition]);
                     }
                 }
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    CurrencyOptions[pointerPosition].Selected.Invoke(customer);
+                    CurrencyOptions[PointerPosition].Selected.Invoke(customer);
                 }
                 if (keyInfo.Key == ConsoleKey.Backspace)
                 {
@@ -246,21 +251,77 @@ namespace Labb_2
             Console.Write("Choose a Password: ");          
             string inputPassword = Console.ReadLine();
 
-            new Customer(inputName, inputPassword);
-            Console.WriteLine("Account created.");
-            WriteTextfile();
+            string choiseOfCustomerType = ChooseCustomerTypeMenu();
+
+            WriteTextfile(choiseOfCustomerType, inputName, inputPassword);
+            ReadTextfile();
+            Console.WriteLine("Account created.");            
             System.Threading.Thread.Sleep(2000);
             StartMenu();
         }
+
+        private static string ChooseCustomerTypeMenu()
+        {
+            PointerPosition = 0;
+
+            PrintCustomerTypeMenu(CustomerTypes, CustomerTypes[PointerPosition]);
+
+            ConsoleKeyInfo keyInfo;
+            do
+            {
+                keyInfo = Console.ReadKey();
+                if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (PointerPosition + 1 < CustomerTypes.Count)
+                    {
+                        PointerPosition++;
+                        PrintCustomerTypeMenu(CustomerTypes, CustomerTypes[PointerPosition]);
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (PointerPosition - 1 >= 0)
+                    {
+                        PointerPosition--;
+                        PrintCustomerTypeMenu(CustomerTypes, CustomerTypes[PointerPosition]);
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    return CustomerTypes[PointerPosition];
+                }
+
+            } while (true);
+        }
+
+        private static void PrintCustomerTypeMenu(List<string> options, string selectedOption)
+        {
+            Console.Clear();
+            Console.WriteLine("Choose a customer type:");
+            foreach (var option in options)
+            {
+                if (option == selectedOption)
+                {
+                    Console.Write("> ");
+                }
+                else
+                {
+                    Console.Write(" ");
+                }
+                Console.WriteLine(option);
+            }
+            Console.WriteLine("Press <UpArrow> or <DownArrow> to navigate. Press <Enter> to select or press <Backspace> to go to Main Menu.");
+        }
         
         //Skriver namn och lösenord för alla konton till en .txt fil.
-        private static void WriteTextfile()
+        private static void WriteTextfile(string type, string name, string password)
         {
             List<string> accountInformation = new List<string>();
             foreach (var customer in Customer.CustomerList)
             {
-                accountInformation.Add($"{customer.Name},{customer.Password},");
+                accountInformation.Add($"{customer.CustomerType},{customer.Name},{customer.Password},");
             }
+            accountInformation.Add($"{type},{name},{password},");
 
             string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
@@ -287,25 +348,25 @@ namespace Labb_2
                 var text = sr.ReadLine();
                
                 
-                List<string> names = text.Split(',').ToList<string>();
-                names.Remove("");
-                for (int i = 0; i < names.Count(); i += 2)
+                List<string> accountInfo = text.Split(',').ToList<string>();
+                accountInfo.Remove("");
+                for (int i = 0; i < accountInfo.Count(); i += 3)
                 {
-                    if (names[i] == "Knatte")
+                    if (accountInfo[i] == "Gold")
                     {
-                        new GoldCustomer(names[i], names[i + 1]);
+                        new GoldCustomer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
                     }
-                    else if (names[i] == "Fnatte")
+                    else if (accountInfo[i] == "Silver")
                     {
-                        new SilverCustomer(names[i], names[i + 1]);
+                        new SilverCustomer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
                     }
-                    else if (names[i] == "Tjatte")
+                    else if (accountInfo[i] == "Bronze")
                     {
-                        new BronzeCustomer(names[i], names[i + 1]);
+                        new BronzeCustomer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
                     }
-                    else
+                    else if(accountInfo[i] == "Basic")
                     {
-                        new Customer(names[i], names[i + 1]);
+                        new Customer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
                     }                  
                 }
                 
@@ -319,9 +380,9 @@ namespace Labb_2
             {
                 List<string> accountInformation = new List<string>() 
                 { 
-                    "Knatte,123,",
-                    "Fnatte,321,",
-                    "Tjatte,213",
+                    "Gold,Knatte,123,",
+                    "Silver,Fnatte,321,",
+                    "Bronze,Tjatte,213",
                 };
                 using (StreamWriter outputFile = new StreamWriter(path))
                 {
