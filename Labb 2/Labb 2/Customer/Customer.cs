@@ -46,11 +46,11 @@ namespace Labb_2
         }
 
         //Konstruktorn för att skapa ett nytt konto.
-        public Customer(string name, string password, string type)
+        public Customer(string type, string name, string password)
         {
+            CustomerType = type;
             Name = name;
             Password = password;
-            CustomerType = type;
             Cart = new List<Products>();
             _customerList.Add(this);
         }
@@ -233,7 +233,7 @@ namespace Labb_2
                         }
                         else
                         {
-                            Console.WriteLine("You didn't input a number silly, try again.");
+                            Console.WriteLine("You didn't input a number, try again.");
                         }
                     } while (true);                   
                 }
@@ -283,35 +283,13 @@ namespace Labb_2
                      
         }       
         
-        //Ändar om valutan till SEK.
-        public void CurrencyConvertToSEK()
+        //Ändrar valutan för det inloggade kontot.
+        public void CurrencyConverter(string currencyCode, float currencyRate)
         {
-            CurrencyCode = "SEK";
-            CurrencyRate = 1F;
+            CurrencyCode = currencyCode;
+            CurrencyRate = currencyRate;
             Console.Clear();
-            Console.WriteLine("Currency converted to SEK.");
-            System.Threading.Thread.Sleep(1000);
-            Program.MainMenu(this);
-        }
-
-        //Ändar om valutan till USD.
-        public void CurrencyConvertToUSD()
-        {
-            CurrencyCode = "USD";
-            CurrencyRate = 0.2F;
-            Console.Clear();
-            Console.WriteLine("Currency converted to Dollar.");
-            System.Threading.Thread.Sleep(1000);
-            Program.MainMenu(this);
-        }
-
-        //Ändar om valutan till GBP.
-        public void CurrencyConvertToGBP()
-        {
-            CurrencyCode = "GBP";
-            CurrencyRate = 0.1F;
-            Console.Clear();
-            Console.WriteLine("Currency converted to Pounds.");
+            Console.WriteLine($"Currency converted to {CurrencyCode}");
             System.Threading.Thread.Sleep(1000);
             Program.MainMenu(this);
         }

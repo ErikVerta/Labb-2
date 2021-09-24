@@ -17,7 +17,7 @@ namespace Labb_2
 
 
         //Konstruktorn för att skapa ett nytt brons konto.
-        public BronzeCustomer(string name, string password, string type) : base(name, password, type)
+        public BronzeCustomer(string type, string name, string password) : base(type, name, password)
         {
         }
 

@@ -17,7 +17,7 @@ namespace Labb_2
 
 
         //Konstruktorn för att skapa ett nytt silver konto.
-        public SilverCustomer(string name, string password, string type) : base(name, password, type)
+        public SilverCustomer(string type, string name, string password) : base(type, name, password)
         {
         }
 

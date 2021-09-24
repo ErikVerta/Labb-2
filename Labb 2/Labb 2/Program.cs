@@ -17,7 +17,7 @@ namespace Labb_2
 
         private static List<string> CustomerTypes { get; set; }
 
-        //Instansierar alla nödvändiga objekt.
+        //Instansierar alla nödvändiga objekt såsom alternativ för dem olika menyerna samt bas produkterna.
         static void Main(string[] args)
         {
             ReadTextfile();
@@ -45,9 +45,9 @@ namespace Labb_2
 
             CurrencyOptions = new List<CurrencyOptions>
             {
-                new CurrencyOptions("Change to SEK",(customer) => customer.CurrencyConvertToSEK()),
-                new CurrencyOptions("Change to USD",(customer) => customer.CurrencyConvertToUSD()),
-                new CurrencyOptions("Change to GBP", (customer) => customer.CurrencyConvertToGBP()),
+                new CurrencyOptions("Change to SEK",(customer) => customer.CurrencyConverter("SEK", 1F)),
+                new CurrencyOptions("Change to USD",(customer) => customer.CurrencyConverter("USD", 0.2F)),
+                new CurrencyOptions("Change to GBP", (customer) => customer.CurrencyConverter("GBP", 0.1F)),
             };
            
             StartMenu();
@@ -161,7 +161,7 @@ namespace Labb_2
 
         }
         
-        //Valutamenyn med alternativ för att byta till Euro, Dollar eller SEK.
+        //Valutamenyn med alternativ för att byta till Pounds, Dollar eller SEK.
         private static void CurrencyMenu(Customer customer)
         {
             PointerPosition = 0;
@@ -260,6 +260,7 @@ namespace Labb_2
             StartMenu();
         }
 
+        //Meny för att välja typ av konto alltså Guld,Silver,Bronze eller basic.
         private static string ChooseCustomerTypeMenu()
         {
             PointerPosition = 0;
@@ -294,6 +295,7 @@ namespace Labb_2
             } while (true);
         }
 
+        //Skriver ut menyn för att välja typ av konto.
         private static void PrintCustomerTypeMenu(List<string> options, string selectedOption)
         {
             Console.Clear();
@@ -346,28 +348,28 @@ namespace Labb_2
             using (var sr = new StreamReader(path))
             {
                 var text = sr.ReadLine();
-               
-                
+                               
                 List<string> accountInfo = text.Split(',').ToList<string>();
                 accountInfo.Remove("");
                 for (int i = 0; i < accountInfo.Count(); i += 3)
                 {
-                    if (accountInfo[i] == "Gold")
+                    switch (accountInfo[i])
                     {
-                        new GoldCustomer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
-                    }
-                    else if (accountInfo[i] == "Silver")
-                    {
-                        new SilverCustomer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
-                    }
-                    else if (accountInfo[i] == "Bronze")
-                    {
-                        new BronzeCustomer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
-                    }
-                    else if(accountInfo[i] == "Basic")
-                    {
-                        new Customer(accountInfo[i + 1], accountInfo[i + 2], accountInfo[i]);
-                    }                  
+                        case "Gold":
+                            new GoldCustomer(accountInfo[i], accountInfo[i + 1], accountInfo[i + 2]);
+                            break;
+                        case "Silver":
+                            new SilverCustomer(accountInfo[i], accountInfo[i + 1], accountInfo[i + 2]);
+                            break;
+                        case "Bronze":
+                            new BronzeCustomer(accountInfo[i], accountInfo[i + 1], accountInfo[i + 2]);
+                            break;
+                        case "Basic":
+                            new Customer(accountInfo[i], accountInfo[i + 1], accountInfo[i + 2]);
+                            break;
+                        default:
+                            break;
+                    }                                 
                 }
                 
             }           

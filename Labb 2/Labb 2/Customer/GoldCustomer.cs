@@ -17,7 +17,7 @@ namespace Labb_2
 
 
         //Konstruktorn för att skapa ett nytt guld konto.
-        public GoldCustomer(string name, string password, string type) : base(name, password, type) 
+        public GoldCustomer(string type, string name, string password) : base(type, name, password) 
         {
         }
         
